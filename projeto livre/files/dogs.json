@@ -1,0 +1,26 @@
+[
+    {
+        "tag": 99476,
+        "especie": "dog",
+        "age": 4,
+        "gender": "female",
+        "breed": "labra",
+        "admission_date": "2025-05-30"
+    },
+    {
+        "tag": 733,
+        "especie": "Dog",
+        "age": 0,
+        "gender": "0",
+        "breed": "",
+        "admission_date": "2025-05-30"
+    },
+    {
+        "tag": 2446,
+        "especie": "Dog",
+        "age": 10,
+        "gender": "female",
+        "breed": "fila",
+        "admission_date": "2025-05-30"
+    }
+]
