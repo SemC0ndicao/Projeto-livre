@@ -1,13 +1,9 @@
-#sistema de um centro de adoção de animais, com cadastro de animais e novos dono, data de entrada e deadoção, dados do cachorro e do novo dono
-from package.main_menu import Menu
-
+from package import gui_main
 
 def main():
-    Menu()
-
+    gui_main.menu()
 
 
 
 if __name__ == "__main__":
     main()
-    
