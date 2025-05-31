@@ -113,5 +113,33 @@ class Adopter():
 
             print("CPF não encontrado.")
             return None
+    
+    @classmethod
+    def delete_adopter(cls):
+        base_dir = os.path.dirname(os.path.dirname(__file__))
+        adopters_path = os.path.join(base_dir, "files", "adopters.json")
+
+        if not os.path.exists(adopters_path):
+            print("No adopters file found.")
+            return
+
+        with open(adopters_path, "r", encoding="utf-8") as f:
+            try:
+                adopters = json.load(f)
+            except json.JSONDecodeError:
+                print("Error reading adopter data.")
+                return
+
+        cpf = input("Adopter CPF to delete: ").strip()
+        updated = [a for a in adopters if a.get("cpf") != cpf]
+
+        if len(updated) == len(adopters):
+            print("Adopter not found.")
+            return
+
+        with open(adopters_path, "w", encoding="utf-8") as f:
+            json.dump(updated, f, indent=4)
+
+        print("Adopter deleted.")
 
    

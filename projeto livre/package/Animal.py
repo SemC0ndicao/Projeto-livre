@@ -135,7 +135,35 @@ class Animal():
                 return cls(**updated_data)
 
         print("TAG não encontrada.")
-        return None       
+        return None
+    
+    @classmethod
+    def delete_animal(cls):
+        base_dir = os.path.dirname(os.path.dirname(__file__))
+        animals_path = os.path.join(base_dir, "files", "animals.json")
+
+        if not os.path.exists(animals_path):
+            print("No animals file found.")
+            return
+
+        with open(animals_path, "r", encoding="utf-8") as f:
+            try:
+                animals = json.load(f)
+            except json.JSONDecodeError:
+                print("Error reading animal data.")
+                return
+
+        tag = input("Animal tag to delete: ").strip()
+        updated = [a for a in animals if str(a.get("tag")) != tag]
+
+        if len(updated) == len(animals):
+            print("Animal not found.")
+            return
+
+        with open(animals_path, "w", encoding="utf-8") as f:
+            json.dump(updated, f, indent=4)
+
+        print("Animal deleted.")       
 
 
 #inherited
@@ -263,11 +291,39 @@ class Dog(Animal):
                     with open(file_path, "w", encoding="utf-8") as f:
                         json.dump(dogs_data, f, indent=4)
 
-                    print("\nAnimal atualizado com sucesso.")
+                    print("\nDog updated succesfully.\n")
                     return cls(**updated_data)
 
             print("TAG não encontrada.")
-            return None   
+            return None
+
+    @classmethod
+    def delete_dog(cls):
+        base_dir = os.path.dirname(os.path.dirname(__file__))
+        dogs_path = os.path.join(base_dir, "files", "dogs.json")
+
+        if not os.path.exists(dogs_path):
+            print("No dogs file found.")
+            return
+
+        with open(dogs_path, "r", encoding="utf-8") as f:
+            try:
+                dogs = json.load(f)
+            except json.JSONDecodeError:
+                print("Error reading dogs data.")
+                return
+
+        tag = input("dog tag to delete: ").strip()
+        updated = [a for a in dogs if str(a.get("tag")) != tag]
+
+        if len(updated) == len(dogs):
+            print("Dog not found.")
+            return
+
+        with open(dogs_path, "w", encoding="utf-8") as f:
+            json.dump(updated, f, indent=4)
+
+        print("Dog deleted.")   
 
 
 #inherited
@@ -396,3 +452,31 @@ class Cat(Animal):
 
             print("TAG não encontrada.")
             return None
+
+    @classmethod
+    def delete_cat(cls):
+        base_dir = os.path.dirname(os.path.dirname(__file__))
+        cats_path = os.path.join(base_dir, "files", "cats.json")
+
+        if not os.path.exists(cats_path):
+            print("No cats file found.")
+            return
+
+        with open(cats_path, "r", encoding="utf-8") as f:
+            try:
+                cats = json.load(f)
+            except json.JSONDecodeError:
+                print("Error reading cats data.")
+                return
+
+        tag = input("cat tag to delete: ").strip()
+        updated = [a for a in cats if str(a.get("tag")) != tag]
+
+        if len(updated) == len(cats):
+            print("Cat not found.")
+            return
+
+        with open(cats_path, "w", encoding="utf-8") as f:
+            json.dump(updated, f, indent=4)
+
+        print("Cat deleted.") 

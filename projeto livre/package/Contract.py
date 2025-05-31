@@ -3,163 +3,156 @@ import os
 import datetime
 
 class Contract:
-    def __init__(self, cpf, animal_tag, date):
-        self.cpf = cpf
-        self.animal_tag = animal_tag
-        self.date = date
+      def __init__(self, cpf, animal_tag, date):
+            self.cpf = cpf
+            self.animal_tag = animal_tag
+            self.date = date
 
-    @classmethod
-    def new_contract(cls):
-        base_dir = os.path.dirname(os.path.dirname(__file__))
-        adopters_path = os.path.join(base_dir, "files", "adopters.json")
-        animals_path = os.path.join(base_dir, "files", "animals.json")
-        contracts_path = os.path.join(base_dir, "files", "contracts.json")
+      @classmethod
+      def new_contract(cls):
+            base_dir = os.path.dirname(os.path.dirname(__file__))
+            adopters_path = os.path.join(base_dir, "files", "adopters.json")
+            animals_path = os.path.join(base_dir, "files", "animals.json")
+            dogs_path = os.path.join(base_dir, "files", "dogs.json")
+            cats_path = os.path.join(base_dir, "files", "cats.json")
+            contracts_path = os.path.join(base_dir, "files", "contracts.json")
 
-        # Load adopters
-        if os.path.exists(adopters_path):
-            with open(adopters_path, "r", encoding="utf-8") as f:
-                adopters = json.load(f)
-        else:
-            adopters = []
+            def load_json(path):
+                  if os.path.exists(path):
+                        with open(path, "r", encoding="utf-8") as f:
+                              try:
+                                    return json.load(f)
+                              except json.JSONDecodeError:
+                                    return []
+                  return []
 
-        # Load animals
-        if os.path.exists(animals_path):
-            with open(animals_path, "r", encoding="utf-8") as f:
-                animals = json.load(f)
-        else:
-            animals = []
+            adopters = load_json(adopters_path)
+            animals = load_json(animals_path)
+            dogs = load_json(dogs_path)
+            cats = load_json(cats_path)
 
-        cpf = input("\nWhat's the cpf of the adopter? \n")
+            all_animals = animals + dogs + cats
 
-        found_adopter = next((a for a in adopters if a.get("cpf") == cpf), None)
-        if not found_adopter:
-            print("Adopter not found.")
-            return
+            cpf = input("Adopter CPF: ").strip()
+            adopter = next((a for a in adopters if a.get("cpf") == cpf), None)
+            if not adopter:
+                  print("Adopter not found.")
+                  return
 
-        print("\nAvailable animals:")
-        for animal in animals:
-            print(f"\nTag: {animal['tag']} |\n Species: {animal['especie']} |\n Breed: {animal['breed']}\n")
+            print("\nAvailable animals:")
+            for animal in all_animals:
+                  print(f"[{animal['tag']}] {animal['especie']} - {animal['breed']}")
 
-        animal_tag = input("\nEnter the tag of the animal: ").strip()
+            animal_tag = input("Animal tag: ").strip()
+            animal = next((a for a in all_animals if str(a.get("tag")) == animal_tag), None)
+            if not animal:
+                  print("Animal not found.")
+                  return
 
-        found_animal = next((a for a in animals if str(a.get("tag")) == animal_tag), None)
-        if not found_animal:
-            print("\nAnimal not found.\n")
-            return
+            contract_date = datetime.datetime.now().strftime("%Y-%m-%d")
+            contract = {
+                  "cpf": cpf,
+                  "animal_tag": animal_tag,
+                  "date": contract_date
+            }
 
-        contract_date = datetime.datetime.now().strftime("%Y-%m-%d")
+            existing_contracts = load_json(contracts_path)
+            existing_contracts.append(contract)
 
-        contract = {
-            "cpf": cpf,
-            "animal_tag": animal_tag,
-            "date": contract_date
-        }
+            with open(contracts_path, "w", encoding="utf-8") as f:
+                  json.dump(existing_contracts, f, indent=4)
 
-        if os.path.exists(contracts_path):
+            print("Contract successfully created.")
+            return cls(**contract)
+
+
+      @classmethod
+      def list_contracts(cls):
+            base_dir = os.path.dirname(os.path.dirname(__file__))
+            contracts_path = os.path.join(base_dir, "files", "contracts.json")
+
+            if os.path.exists(contracts_path):
+                  with open(contracts_path, "r", encoding="utf-8") as f:
+                        try:
+                              contracts = json.load(f)
+                              for c in contracts:
+                                    print(f"Contract => Adopter: {c['cpf']} | Tag: {c['animal_tag']} | Date: {c['date']}")
+                        except json.JSONDecodeError:
+                              print("Contracts file is empty or corrupted.")
+            else:
+                  print("No contracts found.")
+
+      @classmethod
+      def edit_contract(cls):
+            base_dir = os.path.dirname(os.path.dirname(__file__))
+            contracts_path = os.path.join(base_dir, "files", "contracts.json")
+
+            if not os.path.exists(contracts_path):
+                  print("No contracts found.")
+                  return
+
             with open(contracts_path, "r", encoding="utf-8") as f:
-                try:
-                    existing_contracts = json.load(f)
-                except json.JSONDecodeError:
-                    existing_contracts = []
-        else:
-            existing_contracts = []
+                  try:
+                        contracts = json.load(f)
+                  except json.JSONDecodeError:
+                        print("Error reading contracts.")
+                        return
 
-        existing_contracts.append(contract)
+            cpf = input("Adopter CPF: ").strip()
+            tag = input("Animal tag: ").strip()
 
-        with open(contracts_path, "w", encoding="utf-8") as f:
-            json.dump(existing_contracts, f, indent=4)
+            for i, c in enumerate(contracts):
+                  if c["cpf"] == cpf and str(c["animal_tag"]) == tag:
+                        print(f"Contract found: Adopter: {c['cpf']} | Tag: {c['animal_tag']} | Date: {c['date']}")
+                        print("Leave blank to keep current value.")
 
-        print("\nContract created successfully.\n")
-        return cls(**contract)
+                        new_cpf = input("New CPF: ").strip()
+                        new_tag = input("New animal tag: ").strip()
 
-    @classmethod
-    def list_contracts(cls):
-        base_dir = os.path.dirname(os.path.dirname(__file__))
-        contracts_path = os.path.join(base_dir, "files", "contracts.json")
+                        if new_cpf:
+                              contracts[i]["cpf"] = new_cpf
+                        if new_tag:
+                              contracts[i]["animal_tag"] = new_tag
 
-        if os.path.exists(contracts_path):
+                        with open(contracts_path, "w", encoding="utf-8") as f:
+                              json.dump(contracts, f, indent=4)
+
+                              print("Contract updated.")
+                              return  # <- ESSENCIAL!
+
+            print("Contract not found.")
+            return None
+
+      @classmethod
+      def delete_contract(cls):
+            base_dir = os.path.dirname(os.path.dirname(__file__))
+            contracts_path = os.path.join(base_dir, "files", "contracts.json")
+
+            if not os.path.exists(contracts_path):
+                  print("No contracts found.")
+                  return
+
             with open(contracts_path, "r", encoding="utf-8") as f:
-                try:
-                    contracts = json.load(f)
-                    for c in contracts:
-                        print(f"Adopter: {c['cpf']} |\n Animal Tag: {c['animal_tag']} |\n Date: {c['date']}\n")
-                except json.JSONDecodeError:
-                    print("Contracts file is empty or corrupted.")
-        else:
-            print("\nNo contracts found.\n")
+                  try:
+                        contracts = json.load(f)
+                  except json.JSONDecodeError:
+                        print("Error reading contracts.")
+                        return
 
-    @classmethod
-    def edit_contract(cls):
-        base_dir = os.path.dirname(os.path.dirname(__file__))
-        contracts_path = os.path.join(base_dir, "files", "contracts.json")
+            cpf = input("Adopter CPF: ").strip()
+            tag = input("Animal tag: ").strip()
 
-        if not os.path.exists(contracts_path):
-            print("\nNo contracts found.\n")
-            return
+            filtered_contracts = [
+                  c for c in contracts
+            if not (c["cpf"] == cpf and str(c["animal_tag"]) == tag)
+            ]
 
-        with open(contracts_path, "r", encoding="utf-8") as f:
-            try:
-                contracts = json.load(f)
-            except json.JSONDecodeError:
-                print("\nError reading contracts.\n")
-                return
+            if len(filtered_contracts) == len(contracts):
+                  print("Contract not found.")
+                  return
 
-        cpf = input("\nEnter adopter's cpf: ").strip()
-        tag = input("\nEnter animal tag: ").strip()
+            with open(contracts_path, "w", encoding="utf-8") as f:
+                  json.dump(filtered_contracts, f, indent=4)
 
-        for i, c in enumerate(contracts):
-            if c["cpf"] == cpf and str(c["animal_tag"]) == tag:
-                print(f"Contract found:\nAdopter: {c['cpf']}\nTag: {c['animal_tag']}\nDate: {c['date']}")
-                print("\nLeave empty to keep current value.")
+            print("Contract deleted.")
 
-                new_cpf = input(f"New adopter cpf [{c['cpf']}]: ").strip() or c['cpf']
-                new_tag = input(f"New animal tag [{c['animal_tag']}]: ").strip() or c['animal_tag']
-                new_date = input(f"New date [{c['date']}]: ").strip() or c['date']
-
-                updated_contract = {
-                    "cpf": new_cpf,
-                    "animal_tag": new_tag,
-                    "date": new_date
-                }
-
-                contracts[i] = updated_contract
-
-                with open(contracts_path, "w", encoding="utf-8") as f:
-                    json.dump(contracts, f, indent=4)
-
-                print("\nContract updated successfully.\n")
-                return cls(**updated_contract)
-
-        print("\nContract not found.\n")
-        return None
-    
-
-    @classmethod
-    def delete_contract(cls):
-        base_dir = os.path.dirname(os.path.dirname(__file__))
-        contracts_path = os.path.join(base_dir, "files", "contracts.json")
-
-        if not os.path.exists(contracts_path):
-            print("\nNo contracts to delete.\n")
-            return
-
-        with open(contracts_path, "r", encoding="utf-8") as f:
-            try:
-                contracts = json.load(f)
-            except json.JSONDecodeError:
-                print("Error loading contracts.")
-                return
-
-        cpf = input("\nEnter adopter's cpf: ").strip()
-        tag = input("\nEnter animal tag: ").strip()
-
-        new_contracts = [c for c in contracts if not (c["cpf"] == cpf and str(c["animal_tag"]) == tag)]
-
-        if len(new_contracts) == len(contracts):
-            print("\nContract not found.\n")
-            return
-
-        with open(contracts_path, "w", encoding="utf-8") as f:
-            json.dump(new_contracts, f, indent=4)
-
-        print("\nContract deleted successfully.\n")

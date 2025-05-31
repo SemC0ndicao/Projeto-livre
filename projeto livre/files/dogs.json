@@ -16,11 +16,11 @@
         "admission_date": "2025-05-30"
     },
     {
-        "tag": 2446,
+        "tag": 28046,
         "especie": "Dog",
-        "age": 10,
-        "gender": "female",
-        "breed": "fila",
+        "age": 1,
+        "gender": "1",
+        "breed": "1",
         "admission_date": "2025-05-30"
     }
 ]

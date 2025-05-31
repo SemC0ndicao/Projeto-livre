@@ -6,13 +6,5 @@
         "gender": "female",
         "breed": "gato gordo",
         "admission_date": "2025-05-29"
-    },
-    {
-        "tag": 2348,
-        "especie": "Cat",
-        "age": 6,
-        "gender": "male",
-        "breed": "sem pelo",
-        "admission_date": "2025-05-30"
     }
 ]

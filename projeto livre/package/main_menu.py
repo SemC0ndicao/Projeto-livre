@@ -75,7 +75,17 @@ class Menu():
         
 
     def delete_animal(self):
-        pass
+
+        opcao = input("\nQual a espécie?\n 1 - Cachorro\n 2 - Gato\n 3 - Outro\n")
+
+        if opcao == "1":
+            Dog.delete_dog()
+        elif opcao == "2":
+            Cat.delete_cat()
+        elif opcao == "3":
+            Animal.delete_animal()
+        else:
+            print("\nSelecione uma opção válida!\n") 
 
 
 
@@ -107,7 +117,7 @@ class Menu():
         Adopter.edit_adopter()
 
     def delete_adopter(self):
-        pass
+        Adopter.delete_adopter()
 
 
 
@@ -135,7 +145,7 @@ class Menu():
         Contract.list_contracts()
 
     def edit_contract(self):
-        Contract.edit_contract
+        Contract.edit_contract()
 
     def delete_contract(self):
         Contract.delete_contract()
