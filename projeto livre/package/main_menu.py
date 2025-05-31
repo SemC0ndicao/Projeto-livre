@@ -1,6 +1,6 @@
 from .Animal import Animal, Dog, Cat
 from .Adopter import Adopter
-from .Contract import Adoption_contract
+from .Contract import Contract
 
 
 #1 animal
@@ -104,7 +104,7 @@ class Menu():
         Adopter.list_adopters()
 
     def edit_adopter(self):
-        pass
+        Adopter.edit_adopter()
 
     def delete_adopter(self):
         pass
@@ -129,16 +129,16 @@ class Menu():
             return
 
     def new_contract(self):
-        Adoption_contract.new_contract()
+        Contract.new_contract()
 
     def list_contracts(self):
-        Adoption_contract.list_contracts()
+        Contract.list_contracts()
 
     def edit_contract(self):
-        pass
+        Contract.edit_contract
 
     def delete_contract(self):
-        pass
+        Contract.delete_contract()
 
 
 
